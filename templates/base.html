@@ -13,44 +13,44 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
       <div class="container">
-        <a class="navbar-brand" href="{% url 'rentals:home' %}">RentTracker</a>
+        <a class="navbar-brand" href="{% url 'tracker:home' %}">RentTracker</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{% url 'rentals:home' %}">Home</a>
+              <a class="nav-link active" aria-current="page" href="{% url 'tracker:home' %}">Home</a>
             </li>
             {% if user.is_authenticated %}
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'rentals:dashboard' %}">Dashboard</a>
+                <a class="nav-link" href="{% url 'tracker:dashboard' %}">Dashboard</a>
               </li>
             {% endif %}
             {# Conditionally show LLCs link #}
-            {% if perms.rentals.view_llc %}
+            {% if perms.tracker.view_llc %}
               <li class="nav-item">
-                  <a class="nav-link" href="{% url 'rentals:llc_list' %}">LLCs</a>
+                  <a class="nav-link" href="{% url 'tracker:llc_list' %}">LLCs</a>
               </li>
             {% endif %}
             {# Conditionally show Properties link #}
-            {% if perms.rentals.view_property %}
+            {% if perms.tracker.view_property %}
               <li class="nav-item">
-                  <a class="nav-link" href="{% url 'rentals:property_list' %}">Properties</a>
+                  <a class="nav-link" href="{% url 'tracker:property_list' %}">Properties</a>
               </li>
             {% endif %}
-            {% if perms.rentals.view_tenant %}
+            {% if perms.tracker.view_tenant %}
               <li class="nav-item">
-                  <a class="nav-link" href="{% url 'rentals:tenant_list' %}">Tenants</a>
+                  <a class="nav-link" href="{% url 'tracker:tenant_list' %}">Tenants</a>
               </li>
             {% endif %}
-            {% if perms.rentals.view_payment %}
+            {% if perms.tracker.view_payment %}
               <li class="nav-item">
-                  <a class="nav-link" href="{% url 'rentals:payment_list' %}">Payments</a>
+                  <a class="nav-link" href="{% url 'tracker:payment_list' %}">Payments</a>
               </li>
             {% endif %}
             {# Add links for Tenants, Payments etc. similarly #}
-              <!-- {# {% if perms.rentals.view_tenant %}
+              <!-- {# {% if perms.tracker.view_tenant %}
               <li class="nav-item">
                   <a class="nav-link" href="#">Tenants</a> {# Add URL later #}
               {#</li>

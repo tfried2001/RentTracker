@@ -8,7 +8,7 @@ from .models import LLC, Property, Tenant, Payment
 from .middleware import get_current_user # Import the function to get the user
 
 # Get an instance of a logger (we'll configure this in settings.py)
-action_logger = logging.getLogger('rentals.actions')
+action_logger = logging.getLogger('tracker.actions')
 
 # List of models we want to log actions for
 LOGGED_MODELS = [LLC, Property, Tenant, Payment]

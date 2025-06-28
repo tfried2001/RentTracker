@@ -9,7 +9,7 @@
       <p class="col-md-8 fs-4">{{ message }}</p>
       {% if user.is_authenticated %}
         <p>You are logged in as {{ user.username }}.</p>
-        <a href="{% url 'rentals:dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+        <a href="{% url 'tracker:dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
         <a href="{% url 'logout' %}" class="btn btn-secondary btn-lg" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
       {% else %}
         <p>Please log in to manage rentals.</p>

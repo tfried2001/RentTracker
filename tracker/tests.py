@@ -30,13 +30,13 @@ class NavigationTest(TestCase):
         self.user = create_test_user()
         # We need a URL for the link to point to, even if the view doesn't exist yet.
         # Let's assume we'll name it 'property_list' in our urls.py
-        self.properties_url = reverse('rentals:property_list') # <<< This will FAIL initially (NoReverseMatch)
+        self.properties_url = reverse('tracker:property_list') # <<< This will FAIL initially (NoReverseMatch)
 
     def test_properties_link_visible_when_logged_in(self):
         """Verify 'Properties' link is present for authenticated users."""
         self.client.login(username='testuser', password='password')
         # We can test any page that uses base.html, like the dashboard
-        dashboard_url = reverse('rentals:dashboard')
+        dashboard_url = reverse('tracker:dashboard')
         response = self.client.get(dashboard_url)
         self.assertEqual(response.status_code, 200)
         # Check if the link HTML is present in the response content
@@ -46,7 +46,7 @@ class NavigationTest(TestCase):
     def test_properties_link_not_visible_when_logged_out(self):
         """Verify 'Properties' link is NOT present for anonymous users."""
         # Access a page that uses base.html, like the home page
-        home_url = reverse('rentals:home')
+        home_url = reverse('tracker:home')
         response = self.client.get(home_url)
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, f'<a class="nav-link" href="{self.properties_url}">Properties</a>') # <<< This might PASS initially if the URL doesn't resolve, but will FAIL correctly once the URL exists but the link isn't there.
@@ -57,7 +57,7 @@ class PropertyListViewTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = create_test_user()
-        self.properties_url = reverse('rentals:property_list') # <<< This will FAIL initially (NoReverseMatch)
+        self.properties_url = reverse('tracker:property_list') # <<< This will FAIL initially (NoReverseMatch)
 
     def test_property_list_view_requires_login(self):
         """Verify accessing the property list page redirects if not logged in."""
@@ -76,7 +76,7 @@ class PropertyListViewTest(TestCase):
         """Verify the correct template is used for the property list page."""
         self.client.login(username='testuser', password='password')
         response = self.client.get(self.properties_url)
-        self.assertTemplateUsed(response, 'rentals/property_list.html') # <<< This will FAIL initially
+        self.assertTemplateUsed(response, 'tracker/property_list.html') # <<< This will FAIL initially
         # Also check it uses the base template implicitly
         self.assertTemplateUsed(response, 'base.html') # <<< This will FAIL initially
 
@@ -94,9 +94,9 @@ class NavigationPermissionTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Create permissions
-        cls.view_llc_perm = get_permission('rentals', 'llc', 'view')
-        cls.view_prop_perm = get_permission('rentals', 'property', 'view')
-        cls.add_prop_perm = get_permission('rentals', 'property', 'add')
+        cls.view_llc_perm = get_permission('tracker', 'llc', 'view')
+        cls.view_prop_perm = get_permission('tracker', 'property', 'view')
+        cls.add_prop_perm = get_permission('tracker', 'property', 'add')
 
         # Create groups and assign permissions
         viewer_group, _ = Group.objects.get_or_create(name='Viewers')
@@ -111,9 +111,9 @@ class NavigationPermissionTest(TestCase):
         cls.no_perms_user = create_test_user(username='noperms', password='password') # Logged in, but no specific group/perms
 
         # URLs
-        cls.dashboard_url = reverse('rentals:dashboard')
-        cls.llc_list_url = reverse('rentals:llc_list')
-        cls.property_list_url = reverse('rentals:property_list')
+        cls.dashboard_url = reverse('tracker:dashboard')
+        cls.llc_list_url = reverse('tracker:llc_list')
+        cls.property_list_url = reverse('tracker:property_list')
 
     def test_nav_links_for_viewer(self):
         """Verify nav links visible to users with only view permissions."""
@@ -152,7 +152,7 @@ class PropertyListViewPermissionTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Permissions
-        cls.view_prop_perm = get_permission('rentals', 'property', 'view')
+        cls.view_prop_perm = get_permission('tracker', 'property', 'view')
         # Groups
         viewer_group, _ = Group.objects.get_or_create(name='Viewers')
         viewer_group.permissions.add(cls.view_prop_perm)
@@ -160,7 +160,7 @@ class PropertyListViewPermissionTest(TestCase):
         cls.viewer_user = create_test_user(username='viewer', password='password', groups=['Viewers'])
         cls.no_perms_user = create_test_user(username='noperms', password='password')
         # URLs
-        cls.properties_url = reverse('rentals:property_list')
+        cls.properties_url = reverse('tracker:property_list')
         cls.login_url = reverse('login') # Assumes default Django login URL name
 
     def test_property_list_view_redirects_if_not_logged_in(self):
@@ -182,13 +182,13 @@ class PropertyListViewPermissionTest(TestCase):
         self.client.login(username='viewer', password='password')
         response = self.client.get(self.properties_url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'rentals/property_list.html')
+        self.assertTemplateUsed(response, 'tracker/property_list.html')
         self.assertContains(response, '<h1>Properties</h1>')
 
 
 # --- Running the tests ---
 # In your terminal, navigate to the project root (where manage.py is)
-# Run: python manage.py test rentals
+# Run: python manage.py test tracker
 #
 # EXPECTED OUTPUT: Lots of failures! (NoReverseMatch, AssertionError, TemplateDoesNotExist, etc.) This is the RED step.
 
@@ -200,8 +200,8 @@ class PropertyListViewPermissionTest(TestCase):
 
 # --- Running the tests ---
 # In your terminal, navigate to the project root (where manage.py is)
-# Run: python manage.py test rentals
+# Run: python manage.py test tracker
 #
 # EXPECTED OUTPUT: Tests should pass if views, templates, and permissions are set up correctly.
-# You might need to create the templates first (base.html, rentals/property_list.html)
+# You might need to create the templates first (base.html, tracker/property_list.html)
 # and ensure the login/logout URLs are configured in your main project urls.py.

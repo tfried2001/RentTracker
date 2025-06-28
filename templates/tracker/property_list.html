@@ -1,4 +1,4 @@
-<!-- /workspaces/python/rent_tracker/templates/rentals/property_list.html -->
+<!-- tracker/property_list.html -->
 {% extends "base.html" %}
 
 {% block title %}Properties - {{ block.super }}{% endblock %}
@@ -8,10 +8,10 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
       <h1>Properties</h1>
       {# Conditionally show the 'Add Property' button #}
-      {% if perms.rentals.add_property %}
+      {% if perms.tracker.add_property %}
           {# Assume you have a URL named 'property_add' for adding properties #}
           <a href="#" class="btn btn-primary">Add New Property</a>
-          {# Replace '#' with {% url 'rentals:property_add' %} when the view/URL exists #}
+          {# Replace '#' with {% url 'tracker:property_add' %} when the view/URL exists #}
       {% endif %}
   </div>
 
@@ -24,7 +24,7 @@
                   <th>Status</th>
                   <th>Rent</th>
                   <th>Bed/Bath</th>
-                  {% if perms.rentals.change_property or perms.rentals.delete_property %}
+                  {% if perms.tracker.change_property or perms.tracker.delete_property %}
                   <th>Actions</th>
                   {% endif %}
               </tr>
@@ -38,17 +38,17 @@
                       <td>${{ property.rent_amount }}</td>
                       <td>{{ property.bedrooms }} / {{ property.bathrooms }}</td>
                       {# Conditionally show Edit/Delete links #}
-                      {% if perms.rentals.change_property or perms.rentals.delete_property %}
+                      {% if perms.tracker.change_property or perms.tracker.delete_property %}
                       <td>
-                          {% if perms.rentals.change_property %}
+                          {% if perms.tracker.change_property %}
                               {# Assume URL 'property_edit' taking property.id #}
                               <a href="#" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
-                              {# Replace '#' with {% url 'rentals:property_edit' property.id %} #}
+                              {# Replace '#' with {% url 'tracker:property_edit' property.id %} #}
                           {% endif %}
-                          {% if perms.rentals.delete_property %}
+                          {% if perms.tracker.delete_property %}
                               {# Assume URL 'property_delete' taking property.id #}
                               <a href="#" class="btn btn-sm btn-outline-danger">Delete</a>
-                              {# Replace '#' with {% url 'rentals:property_delete' property.id %} #}
+                              {# Replace '#' with {% url 'tracker:property_delete' property.id %} #}
                           {% endif %}
                       </td>
                       {% endif %}

@@ -185,7 +185,7 @@ LOGGING = {
             'level': 'INFO', # Adjust level as needed (INFO, WARNING, ERROR)
             'propagate': True,
         },
-        'rentals.actions': { # Our custom logger for model actions
+        'tracker.actions': { # Our custom logger for model actions
             'handlers': ['action_log_file', 'console'], # Log to both file and console
             'level': 'INFO',
             'propagate': False, # Don't pass these logs up to the root logger

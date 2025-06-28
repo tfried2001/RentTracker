@@ -6,8 +6,8 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h1>LLCs</h1>
-        {% if perms.rentals.add_llc %}
-            <a href="{% url 'rentals:llc_add' %}" class="btn btn-primary">Add New LLC</a>
+        {% if perms.tracker.add_llc %}
+            <a href="{% url 'tracker:llc_add' %}" class="btn btn-primary">Add New LLC</a>
         {% endif %}
     </div>
 
@@ -19,7 +19,7 @@
                     <th>Creation Date</th>
                     <th>Last Filing Date</th>
                     <th>Status</th> {# Added from model method #}
-                    {% if perms.rentals.change_llc or perms.rentals.delete_llc %}
+                    {% if perms.tracker.change_llc or perms.tracker.delete_llc %}
                     <th>Actions</th>
                     {% endif %}
                 </tr>
@@ -43,13 +43,13 @@
                                 {% endif %}
                             {% endwith %}
                         </td>
-                        {% if perms.rentals.change_llc or perms.rentals.delete_llc %}
+                        {% if perms.tracker.change_llc or perms.tracker.delete_llc %}
                         <td>
-                            {% if perms.rentals.change_llc %}
-                                <a href="{% url 'rentals:llc_edit' llc.pk %}" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
+                            {% if perms.tracker.change_llc %}
+                                <a href="{% url 'tracker:llc_edit' llc.pk %}" class="btn btn-sm btn-outline-secondary me-1">Edit</a>
                             {% endif %}
-                            {% if perms.rentals.delete_llc %}
-                                <a href="{% url 'rentals:llc_delete' llc.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                            {% if perms.tracker.delete_llc %}
+                                <a href="{% url 'tracker:llc_delete' llc.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
                             {% endif %}
                         </td>
                         {% endif %}
@@ -59,8 +59,8 @@
         </table>
     {% else %}
         <p>No LLCs found.</p>
-        {% if perms.rentals.add_llc %}
-        <p><a href="{% url 'rentals:llc_add' %}" class="btn btn-primary">Add the first LLC</a></p>
+        {% if perms.tracker.add_llc %}
+        <p><a href="{% url 'tracker:llc_add' %}" class="btn btn-primary">Add the first LLC</a></p>
         {% endif %}
     {% endif %}
 </div>
