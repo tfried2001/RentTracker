@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tracker',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -61,10 +63,11 @@ ROOT_URLCONF = 'RentTracker.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                "django.template.context_processors.debug", # Add debug if not present
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -137,3 +140,60 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Add these lines at the end of the file for login/logout redirects
+LOGIN_REDIRECT_URL = '/'  # Redirect to homepage after login
+LOGOUT_REDIRECT_URL = '/' # Redirect to homepage after logout
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False, # Keep default Django loggers
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {asctime} {message}',
+            'style': '{',
+        },
+        'action_formatter': { # Specific formatter for our action logs
+            'format': '{asctime} - {levelname} - {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'console': { # Logs to the console where runserver runs
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'action_log_file': { # Handler for our specific action logs
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/actions.log'), # Log file path
+            'formatter': 'action_formatter',
+        },
+        # You might have other handlers like 'mail_admins' here
+    },
+    'loggers': {
+        'django': { # Default Django logger
+            'handlers': ['console'],
+            'level': 'INFO', # Adjust level as needed (INFO, WARNING, ERROR)
+            'propagate': True,
+        },
+        'rentals.actions': { # Our custom logger for model actions
+            'handlers': ['action_log_file', 'console'], # Log to both file and console
+            'level': 'INFO',
+            'propagate': False, # Don't pass these logs up to the root logger
+        },
+        # You might configure other app loggers here
+    },
+}
+
+# Create the logs directory if it doesn't exist
+LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOGS_DIR, exist_ok=True)
