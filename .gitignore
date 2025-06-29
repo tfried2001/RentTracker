@@ -12,6 +12,7 @@ __pycache__/
 __init__.py
 *.py[cod]
 *$py.class
+migrations/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
