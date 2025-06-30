@@ -1,5 +1,6 @@
 # tracker/forms.py
 from django import forms
+import datetime
 from .models import LLC, Property, Tenant, Payment
 
 class LLCForm(forms.ModelForm):
@@ -10,6 +11,12 @@ class LLCForm(forms.ModelForm):
             'creation_date': forms.DateInput(attrs={'type': 'date'}),
             'last_filing_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        current_year = datetime.date.today().year
+        if 'filing_current' in self.fields:
+            self.fields['filing_current'].label = f"Filed for {current_year}"
 
 class PropertyForm(forms.ModelForm):
     class Meta:

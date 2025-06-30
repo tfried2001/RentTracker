@@ -13,6 +13,10 @@ class LLC(models.Model):
         null=True, #Allow null if the first filing hasn't happened
         blank=True, #Allow blank in forms/admin
         help_text="Date of the last required filing (e.g., annual report)")
+    filing_current = models.BooleanField(
+        default=False,
+        help_text="Has the annual filing for the current year been completed?"
+    )
 
     class Meta:
         verbose_name = "LLC"
@@ -25,33 +29,26 @@ class LLC(models.Model):
     @property
     def filing_status(self):
         """
-        Determines the filing status based on the last_filing_date
-        relative to deadlines in the current year.
+        Determines the filing status based on the filing_current flag
+        and the annual April 15th deadline.
 
-        - green: Last filing is after April 15th of the current year.
-        - yellow: Last filing is between Feb 15th and April 15th of the current year.
-        - red: Last filing is before Feb 15th of the current year.
-        - unknown: No last filing date is recorded.
+        - green: The filing for the current year is marked as complete.
+        - yellow: The filing is not complete, and the deadline is approaching.
+        - red: The filing is not complete, and the deadline has passed.
 
         Returns:
-            str: 'green', 'yellow', 'red', or 'unknown'
+            str: 'green', 'yellow', or 'red'
         """
-        if not self.last_filing_date:
-            return 'unknown'
-
-        current_year = datetime.date.today().year
-        
-        # Define the key dates for the current year
-        red_deadline = datetime.date(current_year, 2, 15)
-        yellow_deadline = datetime.date(current_year, 4, 15)
-
-        # Compare the last filing date to the deadlines
-        if self.last_filing_date < red_deadline:
-            return 'red'
-        elif self.last_filing_date <= yellow_deadline:
-            return 'yellow'
-        else: # self.last_filing_date > yellow_deadline
+        if self.filing_current:
             return 'green'
+
+        today = datetime.date.today()
+        deadline = datetime.date(today.year, 4, 15)
+
+        if today >= deadline:
+            return 'red'
+        else:  # today is before the deadline
+            return 'yellow'
 
 
 class Property(models.Model):

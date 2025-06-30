@@ -4,8 +4,9 @@ from .models import LLC, Property, Tenant, Payment
 
 @admin.register(LLC)
 class LLCAdmin(admin.ModelAdmin):
-    list_display = ('name', 'creation_date', 'last_filing_date')
+    list_display = ('name', 'creation_date', 'last_filing_date', 'filing_current')
     search_fields = ('name',)
+    list_editable = ('filing_current',)
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
