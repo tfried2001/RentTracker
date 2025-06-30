@@ -185,3 +185,39 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment: ${self.amount} by {self.tenant} on {self.payment_date} for {self.property.street_number} {self.property.street_name}"
+
+
+class PropertyFinancialHistory(models.Model):
+    """Tracks changes to financial fields on the Property model."""
+    class TrackedField(models.TextChoices):
+        RENT_AMOUNT = 'rent_amount', 'Rent Amount'
+        HOME_PAYMENT = 'home_payment', 'Home Payment'
+        LOT_PAYMENT = 'lot_payment', 'Lot Payment'
+
+    property = models.ForeignKey(
+        Property,
+        on_delete=models.CASCADE, # If property is deleted, its history is deleted too.
+        related_name='financial_history'
+    )
+    field_name = models.CharField(
+        max_length=20,
+        choices=TrackedField.choices,
+        help_text="The financial field that was changed."
+    )
+    old_value = models.DecimalField(max_digits=8, decimal_places=2, help_text="The value before the change.")
+    new_value = models.DecimalField(max_digits=8, decimal_places=2, help_text="The value after the change.")
+    date_changed = models.DateTimeField(auto_now_add=True, help_text="When the change was made.")
+    changed_by = models.ForeignKey(
+        'auth.User', # Use string to avoid circular import issues
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="The user who made the change."
+    )
+
+    class Meta:
+        verbose_name_plural = "Property Financial History"
+        ordering = ['-date_changed']
+
+    def __str__(self):
+        return f"Change on {self.property} ({self.get_field_name_display()}) on {self.date_changed.strftime('%Y-%m-%d')}"
