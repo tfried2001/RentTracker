@@ -18,76 +18,43 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="{% url 'tracker:home' %}">Home</a>
-            </li>
-            {% if user.is_authenticated %}
+          {% with view_name=request.resolver_match.view_name %}
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'tracker:dashboard' %}">Dashboard</a>
+                <a class="nav-link {% if view_name == 'tracker:home' %}active{% endif %}" href="{% url 'tracker:home' %}">Home</a>
               </li>
-            {% endif %}
-            {# Conditionally show LLCs link #}
-            {% if perms.tracker.view_llc %}
-              <li class="nav-item">
-                  <a class="nav-link" href="{% url 'tracker:llc_list' %}">LLCs</a>
-              </li>
-            {% endif %}
-            {# Conditionally show Properties link #}
-            {% if perms.tracker.view_property %}
-              <li class="nav-item">
-                  <a class="nav-link" href="{% url 'tracker:property_list' %}">Properties</a>
-              </li>
-            {% endif %}
-            {% if perms.tracker.view_tenant %}
-              <li class="nav-item">
-                  <a class="nav-link" href="{% url 'tracker:tenant_list' %}">Tenants</a>
-              </li>
-            {% endif %}
-            {% if perms.tracker.view_payment %}
-              <li class="nav-item">
-                  <a class="nav-link" href="{% url 'tracker:payment_list' %}">Payments</a>
-              </li>
-            {% endif %}
-            {# Add links for Tenants, Payments etc. similarly #}
-              <!-- {# {% if perms.tracker.view_tenant %}
-              <li class="nav-item">
-                  <a class="nav-link" href="#">Tenants</a> {# Add URL later #}
-              {#</li>
-              {% endif %} #} -->
-            <!-- Add links to Properties, Tenants etc. here -->
-              <li class="nav-item">
-                <a class="nav-link" href="/admin/">Admin</a> <!-- Quick link to admin -->
-              </li>
-          </ul>
-          <!--
-          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-             {#% if user.is_authenticated %#}
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    {#{ user.username }#}
-                  </a>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="{#% url 'password_change' %#}">Change Password</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li>
-                       <form id="logout-form" method="post" action="{#% url 'logout' %}#">
-                            {#% csrf_token %#}
-                            <button type="submit" class="dropdown-item">Logout</button>
-                        </form>
-                    </li>
-                  </ul>
-                </li>
-             {#% else %#}
+              {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{#% url 'login' %#}">Login</a>
-                </li> -->
-                <!-- Optional: Add registration link if you implement it -->
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="{#% url 'register' %#"}>Register</a>
-                </li> -->
-             <!-- {#% endif %#}
-          </ul> -->
+                  <a class="nav-link {% if view_name == 'tracker:dashboard' %}active{% endif %}" href="{% url 'tracker:dashboard' %}">Dashboard</a>
+                </li>
+              {% endif %}
+              {# Conditionally show LLCs link #}
+              {% if perms.tracker.view_llc %}
+                <li class="nav-item">
+                    <a class="nav-link {% if 'llc' in view_name %}active{% endif %}" href="{% url 'tracker:llc_list' %}">LLCs</a>
+                </li>
+              {% endif %}
+              {# Conditionally show Properties link #}
+              {% if perms.tracker.view_property %}
+                <li class="nav-item">
+                    <a class="nav-link {% if 'property' in view_name %}active{% endif %}" href="{% url 'tracker:property_list' %}">Properties</a>
+                </li>
+              {% endif %}
+              {% if perms.tracker.view_tenant %}
+                <li class="nav-item">
+                    <a class="nav-link {% if 'tenant' in view_name %}active{% endif %}" href="{% url 'tracker:tenant_list' %}">Tenants</a>
+                </li>
+              {% endif %}
+              {% if perms.tracker.view_payment %}
+                <li class="nav-item">
+                    <a class="nav-link {% if 'payment' in view_name %}active{% endif %}" href="{% url 'tracker:payment_list' %}">Payments</a>
+                </li>
+              {% endif %}
+              <li class="nav-item">
+                <a class="nav-link {% if 'admin' in request.path %}active{% endif %}" href="/admin/">Admin</a> <!-- Quick link to admin -->
+              </li>
+            </ul>
+          {% endwith %}
           <ul class="navbar-nav ms-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
