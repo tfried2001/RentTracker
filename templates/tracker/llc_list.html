@@ -31,7 +31,7 @@
                         <td>{{ llc.creation_date|date:"Y-m-d" }}</td>
                         <td>{{ llc.last_filing_date|date:"Y-m-d"|default:"N/A" }}</td>
                         <td>
-                            {% with status=llc.get_filing_status %}
+                            {% with status=llc.filing_status %}
                                 {% if status == 'green' %}
                                     <span class="badge bg-success">Green</span>
                                 {% elif status == 'yellow' %}

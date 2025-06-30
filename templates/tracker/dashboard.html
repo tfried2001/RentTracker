@@ -32,7 +32,7 @@
                                 <span title="{{ llc.name }}">{{ llc.name|truncatechars:25 }}</span> {# Truncate long names #}
                                 <span>
                                     {% comment %} Reuse the status indicator logic {% endcomment %}
-                                    {% with status=llc.get_filing_status %}
+                                    {% with status=llc.filing_status %}
                                         {% if status == 'green' %}
                                             <span title="Good" style="display: inline-block; width: 15px; height: 15px; border-radius: 50%; background-color: green; vertical-align: middle;"></span>
                                         {% elif status == 'yellow' %}

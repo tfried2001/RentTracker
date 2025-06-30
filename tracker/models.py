@@ -25,12 +25,12 @@ class LLC(models.Model):
     @property
     def filing_status(self):
         """
-        Determines the filing status based on the last filing date and the
-        annual April 15th deadline.
+        Determines the filing status based on the last_filing_date
+        relative to deadlines in the current year.
 
-        - red: The last filing is overdue.
-        - yellow: The next filing deadline is less than 2 months away.
-        - green: The filing is up-to-date.
+        - green: Last filing is after April 15th of the current year.
+        - yellow: Last filing is between Feb 15th and April 15th of the current year.
+        - red: Last filing is before Feb 15th of the current year.
         - unknown: No last filing date is recorded.
 
         Returns:
@@ -39,28 +39,19 @@ class LLC(models.Model):
         if not self.last_filing_date:
             return 'unknown'
 
-        today = datetime.date.today()
-        current_year = today.year
+        current_year = datetime.date.today().year
+        
+        # Define the key dates for the current year
+        red_deadline = datetime.date(current_year, 2, 15)
+        yellow_deadline = datetime.date(current_year, 4, 15)
 
-        # Determine the last deadline that has passed.
-        if today >= datetime.date(current_year, 4, 15):
-            last_deadline = datetime.date(current_year, 4, 15)
-        else:
-            last_deadline = datetime.date(current_year - 1, 4, 15)
-
-        # The filing is overdue if the last filing date is from before the previous deadline.
-        previous_deadline = last_deadline - relativedelta(years=1)
-        if self.last_filing_date < previous_deadline:
+        # Compare the last filing date to the deadlines
+        if self.last_filing_date < red_deadline:
             return 'red'
-
-        # Check if we are in the warning period for the upcoming deadline.
-        next_deadline = last_deadline + relativedelta(years=1)
-        warning_period_start = next_deadline - relativedelta(months=2)
-        if today >= warning_period_start:
+        elif self.last_filing_date <= yellow_deadline:
             return 'yellow'
-
-        # Otherwise, the filing is up-to-date.
-        return 'green'
+        else: # self.last_filing_date > yellow_deadline
+            return 'green'
 
 
 class Property(models.Model):
