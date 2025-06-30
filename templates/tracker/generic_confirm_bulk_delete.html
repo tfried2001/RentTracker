@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm Bulk Delete{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Confirm Deletion</h1>
+    <hr>
+    <p>Are you sure you want to delete the following {{ objects.count }} {{ object_type }}?</p>
+
+    <div class="alert alert-warning" role="alert">
+        <ul>
+        {% for object in objects %}
+            <li><strong>{{ object }}</strong></li>
+        {% endfor %}
+        </ul>
+        <p class="mt-2 text-danger"><strong>Warning:</strong> This action cannot be undone. Related tenants or payments may prevent deletion.</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for object in objects %}
+            <input type="hidden" name="selected_properties" value="{{ object.pk }}">
+        {% endfor %}
+        <input type="hidden" name="action" value="bulk_delete">
+
+        <button type="submit" name="confirm_delete" class="btn btn-danger">Yes, Delete Them</button>
+        <a href="{% url 'tracker:property_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

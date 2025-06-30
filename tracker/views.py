@@ -6,7 +6,7 @@ from django.db import IntegrityError, transaction # For handling potential error
 from django.db.models import ProtectedError # To handle deletion protection
 
 from .models import LLC, Property, Tenant, Payment # Import the LLC model
-from .forms import LLCForm, PropertyForm, TenantForm, PaymentForm # Import the forms
+from .forms import LLCForm, PropertyForm, TenantForm, PaymentForm, PropertyBulkUpdateForm # Import the forms
 
 # Public homepage view
 def home(request):
@@ -201,6 +201,66 @@ def property_delete(request, pk):
     context = {'object': prop, 'object_type': 'Property'}
     return render(request, 'tracker/generic_confirm_delete.html', context)
 
+@login_required
+def property_bulk_action(request):
+    if request.method != 'POST':
+        messages.error(request, "This action can only be performed via POST.")
+        return redirect('tracker:property_list')
+
+    action = request.POST.get('action')
+    selected_ids = request.POST.getlist('selected_properties')
+
+    if not selected_ids:
+        messages.warning(request, "You must select at least one property.")
+        return redirect('tracker:property_list')
+
+    # Check permissions for the chosen action
+    if action == 'bulk_delete' and not request.user.has_perm('tracker.delete_property'):
+        messages.error(request, "You do not have permission to delete properties.")
+        return redirect('tracker:property_list')
+    if action == 'bulk_update' and not request.user.has_perm('tracker.change_property'):
+        messages.error(request, "You do not have permission to change properties.")
+        return redirect('tracker:property_list')
+
+    queryset = Property.objects.filter(pk__in=selected_ids)
+
+    # --- Bulk Delete Logic ---
+    if action == 'bulk_delete':
+        if 'confirm_delete' in request.POST: # This is the confirmation step
+            try:
+                count = queryset.count()
+                queryset.delete()
+                messages.success(request, f"Successfully deleted {count} properties.")
+            except ProtectedError:
+                messages.error(request, "Deletion failed. Some properties have tenants or payments and cannot be deleted.")
+            return redirect('tracker:property_list')
+        
+        # Render the confirmation page
+        context = {'objects': queryset, 'object_type': 'Properties'}
+        return render(request, 'tracker/generic_confirm_bulk_delete.html', context)
+
+    # --- Bulk Update Logic ---
+    if action == 'bulk_update':
+        # This is the submission from the bulk update form
+        if 'update_status_submit' in request.POST:
+            form = PropertyBulkUpdateForm(request.POST)
+            if form.is_valid():
+                new_status = form.cleaned_data['status']
+                updated_count = queryset.update(status=new_status)
+                messages.success(request, f"Successfully updated {updated_count} properties to '{dict(Property.StatusChoices.choices)[new_status]}'.")
+                return redirect('tracker:property_list')
+        
+        # This is the initial step, show the bulk update form
+        form = PropertyBulkUpdateForm()
+        context = {
+            'form': form,
+            'properties': queryset,
+            'form_title': 'Bulk Update Property Status',
+        }
+        return render(request, 'tracker/property_bulk_update.html', context)
+
+    messages.error(request, "No valid action was selected.")
+    return redirect('tracker:property_list')
 
 # --- Tenant CRUD Views ---
 @login_required

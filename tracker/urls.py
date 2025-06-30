@@ -21,6 +21,7 @@ urlpatterns = [
     path('properties/add/', views.property_add, name='property_add'),
     path('properties/<int:pk>/edit/', views.property_edit, name='property_edit'),
     path('properties/<int:pk>/delete/', views.property_delete, name='property_delete'),
+    path('properties/bulk-action/', views.property_bulk_action, name='property_bulk_action'),
 
     # Tenant URLs
     path('tenants/', views.tenant_list, name='tenant_list'),

@@ -43,3 +43,13 @@ class PaymentForm(forms.ModelForm):
         widgets = {
             'payment_date': forms.DateInput(attrs={'type': 'date'}),
         }
+
+class PropertyBulkUpdateForm(forms.Form):
+    """
+    A form for updating the status of multiple properties at once.
+    """
+    status = forms.ChoiceField(
+        choices=Property.StatusChoices.choices,
+        required=True,
+        label="Set status for all selected properties to"
+    )
