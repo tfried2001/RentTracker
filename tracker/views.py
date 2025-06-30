@@ -1,5 +1,6 @@
 # tracker/views.py
 from django.shortcuts import render, redirect, get_object_or_404 # Import redirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required # Import login_required
 from django.db import IntegrityError, transaction # For handling potential errors
 from django.db.models import ProtectedError # To handle deletion protection
@@ -80,7 +81,11 @@ def llc_add(request):
                  messages.error(request, f"An unexpected error occurred: {e}")
     else:
         form = LLCForm()
-    context = {'form': form, 'form_title': 'Add New LLC'}
+    context = {
+        'form': form,
+        'form_title': 'Add New LLC',
+        'cancel_url': 'tracker:llc_list'
+    }
     return render(request, 'tracker/generic_form.html', context)
 
 @login_required
@@ -100,7 +105,12 @@ def llc_edit(request, pk):
                  messages.error(request, f"An unexpected error occurred: {e}")
     else:
         form = LLCForm(instance=llc)
-    context = {'form': form, 'form_title': f'Edit LLC: {llc.name}', 'instance': llc}
+    context = {
+        'form': form,
+        'form_title': f'Edit LLC: {llc.name}',
+        'instance': llc,
+        'cancel_url': 'tracker:llc_list'
+    }
     return render(request, 'tracker/generic_form.html', context)
 
 @login_required
@@ -140,7 +150,11 @@ def property_add(request):
                  messages.error(request, f"An unexpected error occurred: {e}")
     else:
         form = PropertyForm()
-    context = {'form': form, 'form_title': 'Add New Property'}
+    context = {
+        'form': form,
+        'form_title': 'Add New Property',
+        'cancel_url': 'tracker:property_list'
+    }
     return render(request, 'tracker/generic_form.html', context)
 
 @login_required
@@ -160,7 +174,12 @@ def property_edit(request, pk):
                  messages.error(request, f"An unexpected error occurred: {e}")
     else:
         form = PropertyForm(instance=prop)
-    context = {'form': form, 'form_title': f'Edit Property: {prop}', 'instance': prop}
+    context = {
+        'form': form,
+        'form_title': f'Edit Property: {prop}',
+        'instance': prop,
+        'cancel_url': 'tracker:property_list'
+    }
     return render(request, 'tracker/generic_form.html', context)
 
 @login_required
@@ -198,7 +217,11 @@ def tenant_add(request):
                  messages.error(request, f"An unexpected error occurred: {e}")
     else:
         form = TenantForm()
-    context = {'form': form, 'form_title': 'Add New Tenant'}
+    context = {
+        'form': form,
+        'form_title': 'Add New Tenant',
+        'cancel_url': 'tracker:tenant_list'
+    }
     return render(request, 'tracker/generic_form.html', context)
 
 @login_required
@@ -216,7 +239,12 @@ def tenant_edit(request, pk):
                  messages.error(request, f"An unexpected error occurred: {e}")
     else:
         form = TenantForm(instance=tenant)
-    context = {'form': form, 'form_title': f'Edit Tenant: {tenant}', 'instance': tenant}
+    context = {
+        'form': form,
+        'form_title': f'Edit Tenant: {tenant}',
+        'instance': tenant,
+        'cancel_url': 'tracker:tenant_list'
+    }
     return render(request, 'tracker/generic_form.html', context)
 
 @login_required
@@ -254,7 +282,11 @@ def payment_add(request):
                  messages.error(request, f"An unexpected error occurred: {e}")
     else:
         form = PaymentForm()
-    context = {'form': form, 'form_title': 'Add New Payment'}
+    context = {
+        'form': form,
+        'form_title': 'Add New Payment',
+        'cancel_url': 'tracker:payment_list'
+    }
     return render(request, 'tracker/generic_form.html', context)
 
 @login_required
@@ -272,7 +304,12 @@ def payment_edit(request, pk):
                  messages.error(request, f"An unexpected error occurred: {e}")
     else:
         form = PaymentForm(instance=payment)
-    context = {'form': form, 'form_title': f'Edit Payment: {payment}', 'instance': payment}
+    context = {
+        'form': form,
+        'form_title': f'Edit Payment: {payment}',
+        'instance': payment,
+        'cancel_url': 'tracker:payment_list'
+    }
     return render(request, 'tracker/generic_form.html', context)
 
 @login_required
