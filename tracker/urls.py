@@ -3,7 +3,7 @@ from django.urls import path
 from . import views # Import views from the current directory
 
 # Define an app name for namespacing (optional but good practice)
-app_name = 'trackers'
+app_name = 'tracker'
 
 urlpatterns = [
     # Map the root URL of the app ('/') to the home view

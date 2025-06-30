@@ -22,38 +22,45 @@ class LLC(models.Model):
     def __str__(self):
         return self.name
     
-    def get_filing_status(self):
+    @property
+    def filing_status(self):
         """
-        Determines the filing status based on the last_filing_date
-        relative to the next April 15th deadline.
+        Determines the filing status based on the last filing date and the
+        annual April 15th deadline.
+
+        - red: The last filing is overdue.
+        - yellow: The next filing deadline is less than 2 months away.
+        - green: The filing is up-to-date.
+        - unknown: No last filing date is recorded.
 
         Returns:
             str: 'green', 'yellow', 'red', or 'unknown'
         """
         if not self.last_filing_date:
-            return 'unknown' # Or 'red' if you prefer assuming overdue
+            return 'unknown'
 
         today = datetime.date.today()
         current_year = today.year
 
-        # Determine the *next* April 15th deadline
-        # If today is before or on April 15 this year, the deadline is this year's April 15
-        # Otherwise, the deadline is next year's April 15
-        if today <= datetime.date(current_year, 4, 15):
-            deadline_date = datetime.date(current_year, 4, 15)
+        # Determine the last deadline that has passed.
+        if today >= datetime.date(current_year, 4, 15):
+            last_deadline = datetime.date(current_year, 4, 15)
         else:
-            deadline_date = datetime.date(current_year + 1, 4, 15)
+            last_deadline = datetime.date(current_year - 1, 4, 15)
 
-        # Calculate the date 2 months before the deadline
-        two_months_before_deadline = deadline_date - relativedelta(months=2)
+        # The filing is overdue if the last filing date is from before the previous deadline.
+        previous_deadline = last_deadline - relativedelta(years=1)
+        if self.last_filing_date < previous_deadline:
+            return 'red'
 
-        # Compare last filing date to the thresholds
-        if self.last_filing_date >= deadline_date:
-            return 'red' # Filed on or after the deadline (late for the *next* cycle)
-        elif self.last_filing_date >= two_months_before_deadline:
-            return 'yellow' # Filed within 2 months of the deadline
-        else:
-            return 'green' # Filed more than 2 months before the deadline
+        # Check if we are in the warning period for the upcoming deadline.
+        next_deadline = last_deadline + relativedelta(years=1)
+        warning_period_start = next_deadline - relativedelta(months=2)
+        if today >= warning_period_start:
+            return 'yellow'
+
+        # Otherwise, the filing is up-to-date.
+        return 'green'
 
 
 class Property(models.Model):
@@ -117,7 +124,7 @@ class Property(models.Model):
         verbose_name_plural = "Properties"
         ordering = ['llc', 'street_number', 'street_name']
         # Unique constraint for address within an LLC (optional but good)
-        # unique_together = ('llc', 'street_name', 'street_number')
+        unique_together = (('llc', 'street_name', 'street_number'),)
 
     def __str__(self):
         return f"{self.street_number} {self.street_name} ({self.llc.name})"
@@ -190,4 +197,3 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment: ${self.amount} by {self.tenant} on {self.payment_date} for {self.property.street_number} {self.property.street_name}"
-
