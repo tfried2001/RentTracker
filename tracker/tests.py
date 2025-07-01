@@ -27,21 +27,21 @@ class NavigationTest(TestCase):
     def setUp(self):
         """Set up common test resources"""
         self.client = Client()
-        self.user = create_test_user()
-        # We need a URL for the link to point to, even if the view doesn't exist yet.
-        # Let's assume we'll name it 'property_list' in our urls.py
-        self.properties_url = reverse('tracker:property_list') # <<< This will FAIL initially (NoReverseMatch)
+        # The user needs the 'view_property' permission for the link to show up in the nav.
+        view_prop_perm = get_permission('tracker', 'property', 'view')
+        self.user = create_test_user(permissions=[view_prop_perm])
+        self.properties_url = reverse('tracker:property_list')
 
     def test_properties_link_visible_when_logged_in(self):
-        """Verify 'Properties' link is present for authenticated users."""
+        """Verify 'Properties' link is present for authenticated users with permission."""
         self.client.login(username='testuser', password='password')
         # We can test any page that uses base.html, like the dashboard
         dashboard_url = reverse('tracker:dashboard')
         response = self.client.get(dashboard_url)
         self.assertEqual(response.status_code, 200)
-        # Check if the link HTML is present in the response content
-        # Use assertContains for checking substrings in HTML response
-        self.assertContains(response, f'<a class="nav-link" href="{self.properties_url}">Properties</a>') # <<< This will FAIL initially
+        # Check that the link is present. This is less brittle than checking the exact class attribute,
+        # which can be affected by template logic (e.g., adding an 'active' class).
+        self.assertContains(response, f'href="{self.properties_url}">Properties</a>')
 
     def test_properties_link_not_visible_when_logged_out(self):
         """Verify 'Properties' link is NOT present for anonymous users."""
@@ -56,7 +56,9 @@ class PropertyListViewTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.user = create_test_user()
+        # The user needs the 'view_property' permission to access the list view.
+        view_prop_perm = get_permission('tracker', 'property', 'view')
+        self.user = create_test_user(permissions=[view_prop_perm])
         self.properties_url = reverse('tracker:property_list') # <<< This will FAIL initially (NoReverseMatch)
 
     def test_property_list_view_requires_login(self):
