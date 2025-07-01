@@ -142,8 +142,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Add these lines at the end of the file for login/logout redirects
-LOGIN_REDIRECT_URL = '/'  # Redirect to homepage after login
-LOGOUT_REDIRECT_URL = '/' # Redirect to homepage after logout
+LOGIN_REDIRECT_URL = 'tracker:dashboard' # Redirect to dashboard after login
+LOGOUT_REDIRECT_URL = 'tracker:home' # Redirect to the public home page after logout
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"

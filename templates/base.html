@@ -64,7 +64,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" href="#">Profile</a></li> {# Add URL later #}
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a></li>
                     </ul>
                 </li>
             {% else %}
@@ -86,6 +86,13 @@
         <!-- Page specific content goes here -->
         {% endblock %}
     </main>
+
+    {# This hidden form is used for the POST-based logout #}
+    {% if user.is_authenticated %}
+    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+        {% csrf_token %}
+    </form>
+    {% endif %}
 
     <footer class="container mt-5 text-center text-muted">
         <hr>
