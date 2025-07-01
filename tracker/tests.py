@@ -1,7 +1,7 @@
 # tracker/tests.py
 from django.test import TestCase, Client
 from django.urls import reverse
-from .models import LLC, Property, Tenant, Payment
+from tracker.models import LLC, Property, Tenant, Payment
 from django.contrib.auth.models import User, Group, Permission # Assuming standard Django User model
 from django.contrib.contenttypes.models import ContentType # For permissions
 

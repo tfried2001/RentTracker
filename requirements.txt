@@ -4,3 +4,5 @@ crispy-bootstrap5>=2025.6
 psycopg2>=2.9.10
 python-dateutil>=2.9.0.post0
 python-dotenv>=1.1.1
+pytest>=8.4.1
+pytest-django>=4.11.1
