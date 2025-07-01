@@ -1,6 +1,7 @@
 # tracker/models/tenant.py
 from django.db import models
-from tracker.models import Property
+
+from .property import Property
 
 
 class Tenant(models.Model):

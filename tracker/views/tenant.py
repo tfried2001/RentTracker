@@ -4,10 +4,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.db.models import ProtectedError
 
-
-from tracker.models import Tenant
-from tracker.forms import TenantForm
-
+from ..models import Tenant
+from ..forms import TenantForm
 
 # Tenants view
 @login_required

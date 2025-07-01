@@ -1,8 +1,10 @@
 # tracker/models/payment.py
 from django.db import models
-from tracker.models import Tenant, Property
 from django.core.validators import MinValueValidator
 from decimal import Decimal
+
+from .tenant import Tenant
+from .property import Property
 
 
 

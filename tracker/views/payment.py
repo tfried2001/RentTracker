@@ -4,10 +4,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib import messages
 from django.db.models import ProtectedError
 
-
-from tracker.models import Payment
-from tracker.forms import PaymentForm
-
+from ..models import Payment
+from ..forms import PaymentForm
 
 # Payments view
 @login_required

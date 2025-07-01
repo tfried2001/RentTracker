@@ -5,8 +5,8 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.db.models import ProtectedError
 
-from tracker.models import LLC
-from tracker.forms import LLCForm
+from ..models import LLC
+from ..forms import LLCForm
 
 # LLCs view
 @login_required

@@ -5,9 +5,8 @@ from django.contrib import messages
 from django.db import IntegrityError
 from django.db.models import ProtectedError
 
-from tracker.models import Property
-from tracker.forms import PropertyForm, PropertyBulkUpdateForm
-
+from ..models import Property
+from ..forms import PropertyForm, PropertyBulkUpdateForm
 
 # Properties view
 @login_required

@@ -1,8 +1,9 @@
 # tracker/models/property.py
 from django.db import models
-from tracker.models import LLC
 from django.core.validators import MinValueValidator
 from decimal import Decimal
+
+from .llc import LLC
 
 
 class Property(models.Model):

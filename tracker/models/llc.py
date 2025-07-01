@@ -1,6 +1,6 @@
 # tracker/models/llc.py
 from django.db import models
-import datetime # Import datetime
+import datetime
 
 
 class LLC(models.Model):
