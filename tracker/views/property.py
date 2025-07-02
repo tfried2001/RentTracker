@@ -84,7 +84,11 @@ def property_delete(request, pk):
         except Exception as e:
             messages.error(request, f"An error occurred while deleting: {e}")
             return redirect('tracker:property_list')
-    context = {'object': prop, 'object_type': 'Property'}
+    context = {
+        'object': prop,
+        'object_type': 'Property',
+        'cancel_url': 'tracker:property_list'
+    }
     return render(request, 'tracker/generic_confirm_delete.html', context)
 
 @login_required

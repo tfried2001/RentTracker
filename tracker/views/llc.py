@@ -84,5 +84,9 @@ def llc_delete(request, pk):
         except Exception as e:
             messages.error(request, f"An error occurred while deleting: {e}")
             return redirect('tracker:llc_list')
-    context = {'object': llc, 'object_type': 'LLC'}
+    context = {
+        'object': llc,
+        'object_type': 'LLC',
+        'cancel_url': 'tracker:llc_list'
+    }
     return render(request, 'tracker/generic_confirm_delete.html', context)

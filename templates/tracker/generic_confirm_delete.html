@@ -23,18 +23,7 @@
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Yes, Delete</button>
 
-        {# Determine the cancel URL based on the object type #}
-        {% if object_type == 'LLC' %}
-            <a href="{% url 'tracker:llc_list' %}" class="btn btn-secondary">Cancel</a>
-        {% elif object_type == 'Property' %}
-            <a href="{% url 'tracker:property_list' %}" class="btn btn-secondary">Cancel</a>
-        {% elif object_type == 'Tenant' %}
-            <a href="{% url 'tracker:tenant_list' %}" class="btn btn-secondary">Cancel</a>
-        {% elif object_type == 'Payment' %}
-            <a href="{% url 'tracker:payment_list' %}" class="btn btn-secondary">Cancel</a>
-        {% else %}
-             <a href="{% url 'tracker:dashboard' %}" class="btn btn-secondary">Cancel</a>
-        {% endif %}
+        <a href="{% url cancel_url|default:'tracker:dashboard' %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 {% endblock %}

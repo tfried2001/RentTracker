@@ -77,5 +77,9 @@ def tenant_delete(request, pk):
         except Exception as e:
             messages.error(request, f"An error occurred while deleting: {e}")
             return redirect('tracker:tenant_list')
-    context = {'object': tenant, 'object_type': 'Tenant'}
+    context = {
+        'object': tenant,
+        'object_type': 'Tenant',
+        'cancel_url': 'tracker:tenant_list'
+    }
     return render(request, 'tracker/generic_confirm_delete.html', context)
